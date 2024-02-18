@@ -40,7 +40,7 @@ public final class AntiGhosting extends JavaPlugin implements Listener {
     @Override
     public void onEnable() {
         getServer().getPluginManager().registerEvents(this, this);
-        getCommand("antighost").setExecutor(new Command());
+        Objects.requireNonNull(getCommand("antighost")).setExecutor(new Command());
     }
 
     /**

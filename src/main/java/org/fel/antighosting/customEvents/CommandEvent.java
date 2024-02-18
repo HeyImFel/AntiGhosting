@@ -4,11 +4,11 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 
-import java.util.UUID;
+
 
 public class CommandEvent extends Event {
     private static final HandlerList handlers = new HandlerList();
-    private Player player;
+    private final Player player;
     public CommandEvent(Player plyr) {
         player = plyr;
     }
