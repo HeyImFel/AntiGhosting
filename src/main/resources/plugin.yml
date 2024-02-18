@@ -1,0 +1,7 @@
+name: AntiGhosting
+version: '${project.version}'
+main: org.fel.antighosting.AntiGhosting
+api-version: '1.20'
+commands:
+  antighost:
+    description: toggles on and off AntiGhost
