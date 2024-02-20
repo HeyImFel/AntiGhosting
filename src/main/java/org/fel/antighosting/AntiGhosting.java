@@ -12,7 +12,6 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityResurrectEvent;
-import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerLoginEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.Plugin;
@@ -22,7 +21,6 @@ import org.bukkit.scheduler.BukkitTask;
 import org.fel.antighosting.customEvents.CommandEvent;
 
 import java.util.*;
-import java.util.logging.Logger;
 
 public final class AntiGhosting extends JavaPlugin implements Listener {
 
@@ -39,7 +37,7 @@ public final class AntiGhosting extends JavaPlugin implements Listener {
      */
     private static class data {
         public boolean diedToExplosion;
-        public boolean toggleState;
+        public boolean toggleState; //to be removed, can think of better ways to toggle the plugin on and off
         public boolean totCheckRun;
         public int checkPingPong;
         public BukkitTask playerTask;
@@ -119,6 +117,7 @@ public final class AntiGhosting extends JavaPlugin implements Listener {
 
         Player player = (Player) death.getEntity();
         UUID uuid = player.getUniqueId();
+
         if ((player.getInventory().getItemInOffHand().equals(new ItemStack(Material.TOTEM_OF_UNDYING))
                 || player.getInventory().getItemInMainHand().equals(new ItemStack(Material.TOTEM_OF_UNDYING))
                 /*|| player.getPing() <= 25 NOT NECESSARY, only here to remind myself to re-implement something similar later*/)
@@ -134,6 +133,7 @@ public final class AntiGhosting extends JavaPlugin implements Listener {
             runRetotCheck(player);
             playerData.get(uuid).totCheckRun = true;
         }, 7L);
+
         playerData.get(uuid).playerTask
                 = scheduler.getPendingTasks().get(scheduler.getPendingTasks().size() - 1);
     }
@@ -141,12 +141,17 @@ public final class AntiGhosting extends JavaPlugin implements Listener {
     /**
      * runs when "AntiGhost" command is run
      *
+     * Will be modified, I can think of better ways to enable and disable the effects of the plugin but
+     * don't want to write them right now
+     *
      * @param cmd info on player sending command
      */
     @EventHandler
     public void onCommand(CommandEvent cmd) {
+
         playerData.get(cmd.getPlayer().getUniqueId()).toggleState
                 = !playerData.get(cmd.getPlayer().getUniqueId()).toggleState;
+
         String outMsg = "&c&lAnti-Ghost &8&l▶ &r&7";
 
         if(playerData.get(cmd.getPlayer().getUniqueId()).toggleState) {
@@ -170,6 +175,7 @@ public final class AntiGhosting extends JavaPlugin implements Listener {
     private final PacketListener listener = new PacketAdapter(this, ListenerPriority.NORMAL, PacketType.Play.Client.PONG) {
         @Override
         public void onPacketReceiving(PacketEvent event) {
+
             Player player = event.getPlayer();
             UUID uuid = player.getUniqueId();
 
@@ -199,17 +205,23 @@ public final class AntiGhosting extends JavaPlugin implements Listener {
     /**
      * checks if a player retotemed in time
      *
+     * Would make this whole method run synchronously but for some reason when I tried that it caused problems,
+     * will fix at a later date
+     *
      * @param player player to check
      */
     public void runRetotCheck(Player player) {
+
         if (player.getInventory().getItemInMainHand().equals(new ItemStack(Material.TOTEM_OF_UNDYING))){
             Objects.requireNonNull(player.getEquipment()).setItemInMainHand(null);
             player.sendMessage(color("&c&lAnti-Ghost &8&l▶ &r&7Saved by Anti-Ghost!"));
         }
+
         else if (player.getInventory().getItemInOffHand().equals(new ItemStack(Material.TOTEM_OF_UNDYING))) {
             Objects.requireNonNull(player.getEquipment()).setItemInOffHand(null);
             player.sendMessage(color("&c&lAnti-Ghost &8&l▶ &r&7Saved by Anti-Ghost!"));
         }
+
         else {
             scheduler.scheduleSyncDelayedTask(plugin, () -> {
                 if (player.getInventory().getItemInMainHand().equals(new ItemStack(Material.TOTEM_OF_UNDYING))) {
