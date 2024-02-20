@@ -30,7 +30,6 @@ public final class AntiGhosting extends JavaPlugin implements Listener {
     private final BukkitScheduler scheduler = Bukkit.getScheduler();
     private final Map<UUID, data> playerData = new HashMap<>();
     Plugin plugin = this;
-    private Logger logger = Bukkit.getLogger();
 
     /**
      * death state and command toggle state,
