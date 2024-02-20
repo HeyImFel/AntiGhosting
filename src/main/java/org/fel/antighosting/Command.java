@@ -14,8 +14,6 @@ public class Command implements CommandExecutor {
         }
         Player player = (Player) sender;
         if (cmd.getName().equalsIgnoreCase("antighost")) {
-            //toggleState.put(player.getUniqueId(), !toggleState.get(player.getUniqueId()));
-            System.out.println("command event triggered");
             Bukkit.getServer().getPluginManager().callEvent(new CommandEvent(player));
         }
         return true;
