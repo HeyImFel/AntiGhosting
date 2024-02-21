@@ -31,7 +31,7 @@ public class PingPongListeners {
             }
 
             task(uuid).cancel();
-            runRetotCheck(player);
+            scheduler.scheduleSyncDelayedTask(plugin, () -> {runRetotCheck(player);});
         }
     };
 

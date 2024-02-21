@@ -26,6 +26,8 @@ public class DeathEvents implements Listener {
      */
     @EventHandler
     public void dmgDeath(EntityDamageEvent death) {
+        System.out.println("dmgDeath run");
+        death.setCancelled(false);
         if (!(death.getEntity() instanceof Player)) {
             return;
         }
@@ -41,6 +43,7 @@ public class DeathEvents implements Listener {
         else {
             deathState(uuid, false);
         }
+        System.out.println("dmgDeath finished");
     }
     /**
      * if player is already holding a totem, don't do anything. If player is not,

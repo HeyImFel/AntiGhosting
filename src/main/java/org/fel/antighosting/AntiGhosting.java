@@ -69,47 +69,29 @@ public final class AntiGhosting extends JavaPlugin implements Listener {
     @EventHandler
     public void onJoin(PlayerLoginEvent join) {
         data tempData = new data(false, true, false);
-        tempData.diedToExplosion = false;
-        tempData.toggleState = true;
         playerData.put(join.getPlayer().getUniqueId(), tempData);
     }
 
 
-    /*Would make this whole method run synchronously but for some reason when I tried that it caused problems,
-    will fix at a later date*/
     /**
      * checks if a player retotemed in time
      *
      * @param player player to check
      */
     public static void runRetotCheck(Player player) {
-
         if (player.getInventory().getItemInMainHand().equals(new ItemStack(Material.TOTEM_OF_UNDYING))){
-            scheduler.scheduleSyncDelayedTask(AntiGhosting.getPlugin(AntiGhosting.class), () ->
-                    Objects.requireNonNull(player.getEquipment()).setItemInMainHand(null));
+            Objects.requireNonNull(player.getEquipment()).setItemInMainHand(null);
             player.sendMessage(color("&c&lAnti-Ghost &8&l▶ &r&7Saved by Anti-Ghost!"));
         }
-
         else if (player.getInventory().getItemInOffHand().equals(new ItemStack(Material.TOTEM_OF_UNDYING))) {
-            scheduler.scheduleSyncDelayedTask(AntiGhosting.getPlugin(AntiGhosting.class), () ->
-                    Objects.requireNonNull(player.getEquipment()).setItemInOffHand(null));
+            Objects.requireNonNull(player.getEquipment()).setItemInOffHand(null);
             player.sendMessage(color("&c&lAnti-Ghost &8&l▶ &r&7Saved by Anti-Ghost!"));
         }
-
         else {
-            scheduler.scheduleSyncDelayedTask(AntiGhosting.getPlugin(AntiGhosting.class), () -> {
-                if (player.getInventory().getItemInMainHand().equals(new ItemStack(Material.TOTEM_OF_UNDYING))) {
-                    Objects.requireNonNull(player.getEquipment()).setItemInMainHand(null);
-                }
-                else if (player.getInventory().getItemInOffHand().equals(new ItemStack(Material.TOTEM_OF_UNDYING))) {
-                    Objects.requireNonNull(player.getEquipment()).setItemInOffHand(null);
-                }
-                player.setHealth(0);
-            });
+            player.setHealth(0);
             player.sendMessage(color("&c&lAnti-Ghost &8&l▶ &r&7you missed the retot timing." +
                     "\nthis was not a ghost, work on your retotem!"));
         }
-
     }
 
     /**
