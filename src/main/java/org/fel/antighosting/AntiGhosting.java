@@ -37,7 +37,9 @@ public final class AntiGhosting extends JavaPlugin implements Listener {
         public boolean diedToExplosion;
         public boolean toggleState; //to be removed, can think of better ways to toggle the plugin on and off
         public boolean totCheckRun;
+        public boolean checkUntotemed;
         public int checkPingPong;
+        public int untotSlot;
         public BukkitTask playerTask;
         public data (boolean death, boolean toggle, boolean tot) {
             diedToExplosion = death;
@@ -95,6 +97,21 @@ public final class AntiGhosting extends JavaPlugin implements Listener {
     }
 
     /**
+     * checks if a player switched off the slot their totem was in before it popped client-side
+     *
+     * @param player player to check
+     */
+    public static void runUntotCheck(Player player) {
+        UUID uuid = player.getUniqueId();
+        if (untotSlot(uuid) != player.getInventory().getHeldItemSlot()) {
+            if (!player.getInventory().getItemInMainHand().equals(new ItemStack(Material.TOTEM_OF_UNDYING))) {
+                player.sendMessage(color("&c&lAnti-Ghost &8&l▶ &r&7You switched off your main hand totem too early"));
+                player.setHealth(0.0);
+            }
+        }
+    }
+
+    /**
      * colorizes shit idk im lazy
      *
      * @param string string to colorize
@@ -113,7 +130,7 @@ public final class AntiGhosting extends JavaPlugin implements Listener {
         return playerData.get(player).diedToExplosion;
     }
     /**
-     * sets the players specific latency timeout retotem check task
+     * gets whether the plugins effects have been toggled on or off
      * @param player uuid of player info to get
      * @return toggle state
      */
@@ -121,7 +138,7 @@ public final class AntiGhosting extends JavaPlugin implements Listener {
         return playerData.get(player).toggleState;
     }
     /**
-     * sets the players specific latency timeout retotem check task
+     * gets whether the player has already been retot checked
      * @param player uuid of player info to get
      * @return whether tot check was run
      */
@@ -129,7 +146,15 @@ public final class AntiGhosting extends JavaPlugin implements Listener {
         return playerData.get(player).totCheckRun;
     }
     /**
-     * gets the BukkitTask scheduled to run the retotem check after latency timeout
+     * gets the status of the untotem check
+     * @param player uuid of player info to get
+     * @return whether tot check was run
+     */
+    public static boolean untotState (UUID player) {
+        return playerData.get(player).checkUntotemed;
+    }
+    /**
+     * gets the BukkitTask scheduled to run the retotem check after 350ms latency timeout
      * @param player uuid of player info to get
      * @return task to modify or cancel
      */
@@ -143,6 +168,15 @@ public final class AntiGhosting extends JavaPlugin implements Listener {
      */
     public static int pingID(UUID player) {
         return playerData.get(player).checkPingPong;
+    }
+
+    /**
+     * sets the slot the player was holding when they popped server-side
+     * @param player uuid of player to set
+     * @return held slot
+     */
+    public static int untotSlot(UUID player) {
+        return playerData.get(player).untotSlot;
     }
 
 
@@ -163,12 +197,15 @@ public final class AntiGhosting extends JavaPlugin implements Listener {
         playerData.get(player).toggleState = in;
     }
     /**
-     * checks if the retotem check has already been run
+     * sets if the retotem check has already been run
      * @param player uuid of player info to set
      * @param in info to set
      */
     public static void totCheckRun (UUID player, boolean in) {
         playerData.get(player).totCheckRun = in;
+    }
+    public static void untotState (UUID player, boolean in) {
+        playerData.get(player).checkUntotemed = in;
     }
     /**
      * sets the players specific latency timeout retotem check task
@@ -185,5 +222,14 @@ public final class AntiGhosting extends JavaPlugin implements Listener {
      */
     public static void pingID(UUID player, int in) {
         playerData.get(player).checkPingPong = in;
+    }
+
+    /**
+     * sets the slot the player was holding when they popped server-side
+     * @param player uuid of player to set
+     * @param in held slot
+     */
+    public static void untotSlot(UUID player, int in) {
+        playerData.get(player).untotSlot = in;
     }
 }

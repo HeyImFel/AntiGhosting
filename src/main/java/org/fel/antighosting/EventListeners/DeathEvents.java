@@ -48,24 +48,31 @@ public class DeathEvents implements Listener {
      * create a Ping packet and listen for its Pong response and schedule an event
      * this event will ALWAYS trigger *after* the EntityDamageEvent
      *
-     * @param death when player takes fatal damage
+     * @param pop when player takes fatal damage
      */
     @EventHandler
-    public void onPop (EntityResurrectEvent death) {
-        if (!(death.getEntity() instanceof Player)) {
+    public void onPop (EntityResurrectEvent pop) {
+        if (!(pop.getEntity() instanceof Player)) {
             return;
         }
 
-        Player player = (Player) death.getEntity();
+        Player player = (Player) pop.getEntity();
         UUID uuid = player.getUniqueId();
-
-        if ((player.getInventory().getItemInOffHand().equals(new ItemStack(Material.TOTEM_OF_UNDYING))
-                || player.getInventory().getItemInMainHand().equals(new ItemStack(Material.TOTEM_OF_UNDYING))
-                /*|| player.getPing() <= 25 NOT NECESSARY, only here to remind myself to re-implement something similar later*/)
-                || !deathState(uuid)) {
+        if (!deathState(uuid)) {
             return;
         }
-        death.setCancelled(false);
+
+        if (player.getInventory().getItemInOffHand().equals(new ItemStack(Material.TOTEM_OF_UNDYING))) {
+            return;
+        }
+        if (player.getInventory().getItemInMainHand().equals(new ItemStack(Material.TOTEM_OF_UNDYING))) {
+            untotSlot(uuid, player.getInventory().getHeldItemSlot());
+            untotState(uuid, true);
+            untotSlot(uuid, player.getInventory().getHeldItemSlot());
+            manager.sendServerPacket(player, new PacketContainer(PacketType.Play.Server.PING));
+            return;
+        }
+        pop.setCancelled(false);
 
         manager.sendServerPacket(player, new PacketContainer(PacketType.Play.Server.PING));
         scheduler.runTaskLater(JavaPlugin.getPlugin(AntiGhosting.class), () -> {

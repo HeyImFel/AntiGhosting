@@ -24,14 +24,20 @@ public class PingPongListeners {
             Player player = event.getPlayer();
             UUID uuid = player.getUniqueId();
 
-            if((pingID(uuid) != event.getPacket().getIntegers().read(0))
-                    || totCheckRun(uuid)) {
+            if ((pingID(uuid) != event.getPacket().getIntegers().read(0))) {
+                return;
+            }
+            if (untotState(uuid)) {
+                untotState(uuid, false);
+                scheduler.scheduleSyncDelayedTask(plugin, () -> runUntotCheck(player));
+                return;
+            }
+            if (totCheckRun(uuid)) {
                 totCheckRun(uuid, false);
                 return;
             }
-
             task(uuid).cancel();
-            scheduler.scheduleSyncDelayedTask(plugin, () -> {runRetotCheck(player);});
+            scheduler.scheduleSyncDelayedTask(plugin, () -> runRetotCheck(player));
         }
     };
 
