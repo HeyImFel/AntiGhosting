@@ -97,15 +97,15 @@ public final class AntiGhosting extends JavaPlugin implements Listener {
     }
 
     /**
-     * checks if a player switched off the slot their totem was in before it popped client-side
-     *
+     * checks if a player switched off the slot their main hand totem was in before it popped client-side
+     * does not properly manage items yet, will implement that later
      * @param player player to check
      */
     public static void runUntotCheck(Player player) {
         UUID uuid = player.getUniqueId();
         if (untotSlot(uuid) != player.getInventory().getHeldItemSlot()) {
             if (!player.getInventory().getItemInMainHand().equals(new ItemStack(Material.TOTEM_OF_UNDYING))) {
-                player.sendMessage(color("&c&lAnti-Ghost &8&l▶ &r&7You switched off your main hand totem too early"));
+                player.sendMessage(color("&c&lAnti-Ghost &8&l▶ &r&7You switched off your main hand totem too early."));
                 player.setHealth(0.0);
             }
         }
