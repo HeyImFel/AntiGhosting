@@ -7,7 +7,7 @@ import org.bukkit.entity.Player;
 
 import java.util.UUID;
 
-import static org.fel.antighosting.AntiGhosting.toggleState;
+import static org.fel.antighosting.PlayerData.*;
 
 
 public class Command implements CommandExecutor {
