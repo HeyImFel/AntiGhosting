@@ -7,7 +7,15 @@ import org.bukkit.scheduler.BukkitTask;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
-
+/**
+ * diedToExplosion - death state,
+ * toggleState - command toggle state,
+ * totCheckRun - status of if totem check was already run by Scheduler,
+ * status of the untotem check,
+ * ping packet ID to check against pong packet,
+ * slot the untotem checker will use,
+ * BukkitTask to be cancelled when Pong packet is received
+ */
 public class PlayerData {
     public static final BukkitScheduler scheduler = Bukkit.getScheduler();
 
@@ -15,7 +23,7 @@ public class PlayerData {
         public boolean diedToExplosion;
         public boolean toggleState; //to be removed, can think of better ways to toggle the plugin on and off
         public boolean totCheckRun;
-        public boolean checkUntotemed;
+        public boolean untotCheckRun;
         public int checkPingPong;
         public int untotSlot;
         public BukkitTask playerTask;
@@ -70,7 +78,7 @@ public class PlayerData {
      * @return whether tot check was run
      */
     public static boolean untotState (UUID player) {
-        return playerData.get(player).checkUntotemed;
+        return playerData.get(player).untotCheckRun;
     }
     /**
      * gets the BukkitTask scheduled to run the retotem check after 350ms latency timeout
