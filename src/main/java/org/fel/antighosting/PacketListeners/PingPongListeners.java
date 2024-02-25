@@ -12,6 +12,7 @@ import org.fel.antighosting.AntiGhosting;
 import java.util.UUID;
 
 import static org.fel.antighosting.AntiGhosting.*;
+import static org.fel.antighosting.PlayerData.*;
 
 public class PingPongListeners {
     /**
@@ -24,7 +25,7 @@ public class PingPongListeners {
             Player player = event.getPlayer();
             UUID uuid = player.getUniqueId();
 
-            if ((pingID(uuid) != event.getPacket().getIntegers().read(0))) {
+            if ((pingID(uuid) != event.getPacket().getIntegers().read(0)) || !toggleState(uuid)) {
                 return;
             }
             if (untotState(uuid)) {
@@ -52,14 +53,7 @@ public class PingPongListeners {
         }
     };
 
-    /**
-     * getter for ping listener
-     * @return ping listener
-     */
+
     public static PacketListener getPingListener() { return pingListener; }
-    /**
-     * getter for pong listener
-     * @return pong listener
-     */
     public static PacketListener getPongListener() { return pongListener; }
 }

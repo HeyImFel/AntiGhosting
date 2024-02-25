@@ -15,6 +15,7 @@ import org.fel.antighosting.AntiGhosting;
 import java.util.UUID;
 
 import static org.fel.antighosting.AntiGhosting.*;
+import static org.fel.antighosting.PlayerData.*;
 
 public class DeathEvents implements Listener {
     /**
@@ -34,14 +35,10 @@ public class DeathEvents implements Listener {
         Player player = (Player) death.getEntity();
         UUID uuid = player.getUniqueId();
 
-        if ((death.getCause().equals(EntityDamageEvent.DamageCause.ENTITY_EXPLOSION)
-                || death.getCause().equals(EntityDamageEvent.DamageCause.BLOCK_EXPLOSION))
-                && toggleState(uuid)) {
-            deathState(uuid, player.getHealth() <= death.getFinalDamage());
-        }
-        else {
-            deathState(uuid, false);
-        }
+
+        deathState(uuid, player.getHealth() <= death.getFinalDamage()
+                && (death.getCause().equals(EntityDamageEvent.DamageCause.ENTITY_EXPLOSION)
+                || death.getCause().equals(EntityDamageEvent.DamageCause.BLOCK_EXPLOSION)));
     }
     /**
      * if player is already holding a totem, don't do anything. If player is not,
@@ -58,7 +55,7 @@ public class DeathEvents implements Listener {
 
         Player player = (Player) pop.getEntity();
         UUID uuid = player.getUniqueId();
-        if (!deathState(uuid)) {
+        if (!deathState(uuid) || !toggleState(uuid)) {
             return;
         }
 
