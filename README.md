@@ -1,3 +1,4 @@
 NOT FINISHED
 
-gonna update it very soon and add features like ping spoof detection and a way to stop players that are "dead" from attacking in their retotem window.
+while this plugin is in a usable state, it's missing a few things, like proper item stack management when the player unequips their totem, or ping spoof detection and "desync" protection
+this will all be added eventually. I just do not have the time to add it at the moment.
