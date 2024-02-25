@@ -21,16 +21,6 @@ import static org.fel.antighosting.PlayerData.untotSlot;
 public final class AntiGhosting extends JavaPlugin implements Listener {
 
     public static ProtocolManager manager;
-
-    /**
-     * death state and command toggle state,
-     * status of if totem check was already run by Scheduler,
-     * ping packet ID to check against pong packet,
-     * BukkitTask to be cancelled when Pong packet is received
-     */
-    public static class data {
-
-    }
     /**
      * onEnable, registers events and commands
      * and initializes protocol manager to add
