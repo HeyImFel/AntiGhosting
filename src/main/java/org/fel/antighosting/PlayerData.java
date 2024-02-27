@@ -1,5 +1,7 @@
 package org.fel.antighosting;
 
+import com.comphenix.protocol.PacketType;
+import com.comphenix.protocol.events.PacketContainer;
 import org.bukkit.Bukkit;
 import org.bukkit.scheduler.BukkitScheduler;
 import org.bukkit.scheduler.BukkitTask;
@@ -18,10 +20,10 @@ import java.util.UUID;
  */
 public class PlayerData {
     public static final BukkitScheduler scheduler = Bukkit.getScheduler();
-
+    public static PacketContainer packet = new PacketContainer(PacketType.Play.Server.PING);
     public static class data {
         public boolean diedToExplosion;
-        public boolean toggleState; //to be removed, can think of better ways to toggle the plugin on and off
+        public boolean toggleState;
         public boolean totCheckRun;
         public boolean untotCheckRun;
         public int checkPingPong;
@@ -88,14 +90,7 @@ public class PlayerData {
     public static BukkitTask task(UUID player) {
         return playerData.get(player).playerTask;
     }
-    /**
-     * gets the ID of the Ping packet to be checked against the Pong packet
-     * @param player uuid of player info to get
-     * @return ID of Ping packet
-     */
-    public static int pingID(UUID player) {
-        return playerData.get(player).checkPingPong;
-    }
+
 
     /**
      * sets the slot the player was holding when they popped server-side
@@ -131,8 +126,13 @@ public class PlayerData {
     public static void totCheckRun (UUID player, boolean in) {
         playerData.get(player).totCheckRun = in;
     }
+    /**
+     * sets the status of the untotem check
+     * @param player uuid of player info to set
+     * @param in info to set
+     */
     public static void untotState (UUID player, boolean in) {
-        playerData.get(player).checkUntotemed = in;
+        playerData.get(player).untotCheckRun = in;
     }
     /**
      * sets the players specific latency timeout retotem check task
@@ -142,15 +142,6 @@ public class PlayerData {
     public static void task(UUID player, BukkitTask in) {
         playerData.get(player).playerTask = in;
     }
-    /**
-     * sets the Ping packet ID to later be checked against Pong packet ID
-     * @param player uuid of player info to set
-     * @param in ID to set
-     */
-    public static void pingID(UUID player, int in) {
-        playerData.get(player).checkPingPong = in;
-    }
-
     /**
      * sets the slot the player was holding when they popped server-side
      * @param player uuid of player to set

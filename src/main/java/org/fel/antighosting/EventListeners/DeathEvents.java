@@ -39,6 +39,7 @@ public class DeathEvents implements Listener {
         deathState(uuid, player.getHealth() <= death.getFinalDamage()
                 && (death.getCause().equals(EntityDamageEvent.DamageCause.ENTITY_EXPLOSION)
                 || death.getCause().equals(EntityDamageEvent.DamageCause.BLOCK_EXPLOSION)));
+        
     }
     /**
      * if player is already holding a totem, don't do anything. If player is not,
@@ -66,12 +67,12 @@ public class DeathEvents implements Listener {
             untotSlot(uuid, player.getInventory().getHeldItemSlot());
             untotState(uuid, true);
             untotSlot(uuid, player.getInventory().getHeldItemSlot());
-            manager.sendServerPacket(player, new PacketContainer(PacketType.Play.Server.PING));
+            manager.sendServerPacket(player, packet);
             return;
         }
         pop.setCancelled(false);
 
-        manager.sendServerPacket(player, new PacketContainer(PacketType.Play.Server.PING));
+        manager.sendServerPacket(player, packet);
         scheduler.runTaskLater(JavaPlugin.getPlugin(AntiGhosting.class), () -> {
             runRetotCheck(player);
             totCheckRun(uuid, true);
