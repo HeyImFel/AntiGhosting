@@ -8,7 +8,9 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.player.PlayerItemConsumeEvent;
 import org.bukkit.event.player.PlayerLoginEvent;
+import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.fel.antighosting.EventListeners.DeathEvents;
@@ -55,13 +57,14 @@ public final class AntiGhosting extends JavaPlugin implements Listener {
      * @param player player to check
      */
     public static void runRetotCheck(Player player) {
-        if (player.getInventory().getItemInMainHand().equals(new ItemStack(Material.TOTEM_OF_UNDYING))){
-            Objects.requireNonNull(player.getEquipment()).setItemInMainHand(null);
+        ItemStack totem = new ItemStack(Material.TOTEM_OF_UNDYING);
+        if (player.getInventory().getItemInMainHand().equals(totem)){
+            Bukkit.getPluginManager().callEvent(new PlayerItemConsumeEvent(player, totem, EquipmentSlot.HAND));
             Bukkit.getLogger().info("AntiGhost -> mainhand totem for " + player.getName() + " removed");
             player.sendMessage(color("&c&lAnti-Ghost &8&l▶ &r&7Saved by Anti-Ghost!"));
         }
-        else if (player.getInventory().getItemInOffHand().equals(new ItemStack(Material.TOTEM_OF_UNDYING))) {
-            Objects.requireNonNull(player.getEquipment()).setItemInOffHand(null);
+        else if (player.getInventory().getItemInOffHand().equals(totem)) {
+            Bukkit.getPluginManager().callEvent(new PlayerItemConsumeEvent(player, totem, EquipmentSlot.OFF_HAND));
             Bukkit.getLogger().info("AntiGhost -> offhand totem for " + player.getName() + " removed");
             player.sendMessage(color("&c&lAnti-Ghost &8&l▶ &r&7Saved by Anti-Ghost!"));
         }
@@ -76,6 +79,8 @@ public final class AntiGhosting extends JavaPlugin implements Listener {
     /**
      * checks if a player switched off the slot their main hand totem was in before it popped client-side
      * does not properly manage items yet, will implement that later
+     *
+     * AntiRetotLag will replace this
      * @param player player to check
      */
     public static void runUntotCheck(Player player) {
@@ -90,6 +95,7 @@ public final class AntiGhosting extends JavaPlugin implements Listener {
             }
         }
     }
+
 
     /**
      * colorizes shit idk im lazy

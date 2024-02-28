@@ -28,8 +28,8 @@ public class PacketListeners {
                 return;
             }
             if (untotState(uuid)) {
-                untotState(uuid, false);
                 scheduler.scheduleSyncDelayedTask(plugin, () -> runUntotCheck(player));
+                untotState(uuid, false);
                 return;
             }
             if (totCheckRun(uuid)) {
