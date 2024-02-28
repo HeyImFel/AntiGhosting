@@ -17,7 +17,7 @@ import java.util.UUID;
 import static org.fel.antighosting.AntiGhosting.*;
 import static org.fel.antighosting.PlayerData.*;
 
-public class DeathEvents implements Listener {
+public class EventListeners implements Listener {
     /**
      * Checks if the player's death was caused by an explosion. if it was caused by an explosion,
      * the players "diedToExplosion" state is set positive.
@@ -66,7 +66,6 @@ public class DeathEvents implements Listener {
         if (player.getInventory().getItemInMainHand().equals(new ItemStack(Material.TOTEM_OF_UNDYING))) {
             untotSlot(uuid, player.getInventory().getHeldItemSlot());
             untotState(uuid, true);
-            untotSlot(uuid, player.getInventory().getHeldItemSlot());
             manager.sendServerPacket(player, packet);
             return;
         }
