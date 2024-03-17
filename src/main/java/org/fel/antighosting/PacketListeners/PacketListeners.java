@@ -28,7 +28,7 @@ public class PacketListeners {
                 return;
             }
             if (untotState(uuid)) {
-                scheduler.scheduleSyncDelayedTask(plugin, () -> runUntotCheck(player));
+                runUntotCheck(player);
                 untotState(uuid, false);
                 return;
             }
@@ -37,7 +37,7 @@ public class PacketListeners {
                 return;
             }
             task(uuid).cancel();
-            scheduler.scheduleSyncDelayedTask(plugin, () -> runRetotCheck(player));
+            runRetotCheck(player, false);
         }
     };
 }

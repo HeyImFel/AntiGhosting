@@ -73,7 +73,7 @@ public class EventListeners implements Listener {
 
         manager.sendServerPacket(player, packet);
         scheduler.runTaskLater(JavaPlugin.getPlugin(AntiGhosting.class), () -> {
-            runRetotCheck(player);
+            runRetotCheck(player, true);
             totCheckRun(uuid, true);
         }, 7L);
 

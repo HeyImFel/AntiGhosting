@@ -13,14 +13,13 @@ import org.bukkit.event.player.PlayerLoginEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.fel.antighosting.EventListeners.DeathEvents;
+import org.fel.antighosting.EventListeners.EventListeners;
 
 import java.util.Objects;
 import java.util.UUID;
 
 import static org.fel.antighosting.PacketListeners.PacketListeners.pongListener;
-import static org.fel.antighosting.PlayerData.packet;
-import static org.fel.antighosting.PlayerData.untotSlot;
+import static org.fel.antighosting.PlayerData.*;
 
 public final class AntiGhosting extends JavaPlugin implements Listener {
 
@@ -32,7 +31,7 @@ public final class AntiGhosting extends JavaPlugin implements Listener {
      */
     @Override
     public void onEnable() {
-        getServer().getPluginManager().registerEvents(new DeathEvents(), this);
+        getServer().getPluginManager().registerEvents(new EventListeners(), this);
         getServer().getPluginManager().registerEvents(this, this);
         Objects.requireNonNull(getCommand("antighost")).setExecutor(new Command());
         manager = ProtocolLibrary.getProtocolManager();
@@ -55,21 +54,23 @@ public final class AntiGhosting extends JavaPlugin implements Listener {
      * checks if a player retotemed in time
      *
      * @param player player to check
+     * @param sync if true, method is being called synchronously
      */
-    public static void runRetotCheck(Player player) {
+    public static void runRetotCheck(Player player, boolean sync) {
         ItemStack totem = new ItemStack(Material.TOTEM_OF_UNDYING);
         if (player.getInventory().getItemInMainHand().equals(totem)){
-            Bukkit.getPluginManager().callEvent(new PlayerItemConsumeEvent(player, totem, EquipmentSlot.HAND));
+            player.getInventory().setItemInMainHand(null);
             Bukkit.getLogger().info("AntiGhost -> mainhand totem for " + player.getName() + " removed");
             player.sendMessage(color("&c&lAnti-Ghost &8&l▶ &r&7Saved by Anti-Ghost!"));
         }
         else if (player.getInventory().getItemInOffHand().equals(totem)) {
-            Bukkit.getPluginManager().callEvent(new PlayerItemConsumeEvent(player, totem, EquipmentSlot.OFF_HAND));
+            player.getInventory().setItemInOffHand(null);
             Bukkit.getLogger().info("AntiGhost -> offhand totem for " + player.getName() + " removed");
             player.sendMessage(color("&c&lAnti-Ghost &8&l▶ &r&7Saved by Anti-Ghost!"));
         }
         else {
-            player.setHealth(0);
+            if(sync) player.setHealth(0.0);
+            else scheduler.scheduleSyncDelayedTask(JavaPlugin.getPlugin(AntiGhosting.class), () -> player.setHealth(0.0));
             Bukkit.getLogger().info("AntiGhost -> player " + player.getName() + " killed by failed retot check");
             player.sendMessage(color("&c&lAnti-Ghost &8&l▶ &r&7you missed the retot timing." +
                     "\nthis was not a ghost, work on your retotem!"));
@@ -90,8 +91,10 @@ public final class AntiGhosting extends JavaPlugin implements Listener {
             if (!player.getInventory().getItemInMainHand().equals(totem)) {
                 Bukkit.getLogger().info("AntiGhost -> player " + player.getName() + " killed by failed untot check");
                 player.sendMessage(color("&c&lAnti-Ghost &8&l▶ &r&7You switched off your main hand totem too early."));
-                player.getInventory().addItem(totem);
-                player.setHealth(0.0);
+                scheduler.scheduleSyncDelayedTask(JavaPlugin.getPlugin(AntiGhosting.class), () -> {
+                    player.getInventory().addItem(totem);
+                    player.setHealth(0.0);
+                });
             }
         }
     }
