@@ -1,5 +1,8 @@
 package org.fel.antighosting;
 
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.player.PlayerItemConsumeEvent;
+
 public class AntiRetotLag {
-    //empty, will be writing basically the entire plugin again but this time to check for untoteming too early :)
+    //empty for now, will be working on this most likely with an InventoryClickEvent based implementation
 }
